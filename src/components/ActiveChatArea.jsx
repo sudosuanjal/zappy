@@ -9,7 +9,6 @@ import {
   Send,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
 import { AnimatePresence, motion } from "framer-motion";
 
 const initialMessages = [
@@ -167,7 +166,7 @@ const ActiveChatArea = () => {
       </div>
 
       {/* Messages Section */}
-      <div className="bg-zinc-900/90 rounded-xl shadow-xl flex-1 overflow-y-auto p-6 border border-zinc-800 scrollbar-hide">
+      <div className="bg-zinc-900/90 rounded-xl shadow-xl flex-1 overflow-y-auto p-6 border border-zinc-800 custom-scrollbar">
         <div className="space-y-4">
           <AnimatePresence initial={false}>
             {messages.map((message) => (
