@@ -8,9 +8,11 @@ import {
   Play,
   Send,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const messages = [
+import { AnimatePresence, motion } from "framer-motion";
+
+const initialMessages = [
   {
     id: 1,
     text: "How about these pictures?",
@@ -29,29 +31,34 @@ const messages = [
     incoming: false,
     time: "5:12 PM",
   },
-  {
-    id: 3,
-    text: "Looks cool, can you find more options?",
-    incoming: false,
-    time: "5:12 PM",
-  },
-  {
-    id: 4,
-    text: "Sure, but I'm busy right now.",
-    incoming: true,
-    time: "5:12 PM",
-  },
-  {
-    id: 5,
-    audio: true,
-    duration: "0:24",
-    incoming: true,
-    time: "5:12 PM",
-  },
 ];
 
 const ActiveChatArea = () => {
+  const [messages, setMessages] = useState(initialMessages);
+  const [input, setInput] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  const handleSend = () => {
+    if (input.trim() === "") return;
+    const newMessage = {
+      id: Date.now(),
+      text: input.trim(),
+      incoming: false,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setMessages((prev) => [...prev, newMessage]);
+    setInput("");
+  };
 
   const MessageBubble = ({ message }) => (
     <div
@@ -121,12 +128,13 @@ const ActiveChatArea = () => {
           <p className="text-gray-100 font-medium">{message.text}</p>
         )}
       </div>
+      <div ref={messagesEndRef} />
     </div>
   );
 
   return (
     <div className="flex-1 flex flex-col space-y-4">
-      {/* Profile Header Section */}
+      {/* Header */}
       <div className="bg-zinc-900/90 rounded-xl shadow-xl p-4 h-16 flex items-center border border-zinc-800">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center space-x-3">
@@ -159,18 +167,28 @@ const ActiveChatArea = () => {
       </div>
 
       {/* Messages Section */}
-      <div className="bg-zinc-900/90 rounded-xl shadow-xl flex-1 overflow-y-auto p-6 border border-zinc-800">
+      <div className="bg-zinc-900/90 rounded-xl shadow-xl flex-1 overflow-y-auto p-6 border border-zinc-800 scrollbar-hide">
         <div className="space-y-4">
-          {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
+          <AnimatePresence initial={false}>
+            {messages.map((message) => (
+              <motion.div
+                key={message.id}
+                layout="position"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <MessageBubble message={message} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Input Area Section */}
+      {/* Input Area */}
       <div className="h-16 flex items-center">
         <div className="flex items-center w-full gap-3">
-          {/* Input Section */}
           <div className="bg-zinc-900/90 rounded-xl shadow-xl p-4 h-16 flex items-center flex-1 px-4 border border-zinc-800">
             <Paperclip
               size={18}
@@ -178,12 +196,14 @@ const ActiveChatArea = () => {
             />
             <input
               type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Write messages..."
               className="flex-1 text-sm text-gray-300 placeholder-gray-500 bg-transparent focus:outline-none"
             />
           </div>
 
-          {/* Mic Button */}
           <button className="bg-zinc-900/90 rounded-xl shadow-xl p-4 h-16 flex items-center justify-center border border-zinc-800 hover:bg-zinc-800 transition-colors duration-200">
             <Mic
               size={18}
@@ -191,8 +211,10 @@ const ActiveChatArea = () => {
             />
           </button>
 
-          {/* Send Button */}
-          <button className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-xl p-4 h-16 flex items-center justify-center text-white hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-200">
+          <button
+            onClick={handleSend}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-xl p-4 h-16 flex items-center justify-center text-white hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-200"
+          >
             <Send size={16} />
           </button>
         </div>
