@@ -1,14 +1,16 @@
 import ChatListSection from "./components/ChatListSection";
 import ActiveChatArea from "./components/ActiveChatArea";
+import { Route, Routes } from "react-router";
+import ChatPage from "./pages/ChatPage";
 
 const App = () => {
   return (
-    <div className="h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 p-3">
-      <div className="flex h-full space-x-3">
-        <ChatListSection />
-        <ActiveChatArea />
-      </div>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/login" element={<ChatPage />} />
+      </Routes>
+    </>
   );
 };
 
