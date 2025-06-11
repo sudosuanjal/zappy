@@ -11,6 +11,10 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      const existingUsername = await User.findOne({ username });
+      if (existingUsername) {
+        return res.status(409).json({ message: "Username is already taken" });
+      }
       const newUser = new User({
         email,
         fullName,
