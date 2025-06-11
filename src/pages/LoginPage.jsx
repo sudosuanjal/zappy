@@ -22,6 +22,8 @@ const LoginPage = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+  //const accessToken = session.data.session?.access_token;
+  console.log(session?.access_token);
 
   const handleGoogleLogin = async () => {
     try {
@@ -43,27 +45,27 @@ const LoginPage = () => {
     }
   };
 
-  if (session) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center p-4">
-        <div className="bg-zinc-900/90 backdrop-blur-md rounded-2xl shadow-2xl border border-zinc-800 p-8 text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <MessageCircle className="text-white" size={32} />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-100 mb-2">
-            Welcome back!
-          </h2>
-          <p className="text-gray-400 mb-6">You're successfully logged in.</p>
-          <button
-            onClick={() => supabase.auth.signOut()}
-            className="px-6 py-3 bg-zinc-800 text-gray-300 rounded-xl hover:bg-zinc-700 transition-colors duration-200"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (session) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center p-4">
+  //       <div className="bg-zinc-900/90 backdrop-blur-md rounded-2xl shadow-2xl border border-zinc-800 p-8 text-center">
+  //         <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+  //           <MessageCircle className="text-white" size={32} />
+  //         </div>
+  //         <h2 className="text-2xl font-bold text-gray-100 mb-2">
+  //           Welcome back!
+  //         </h2>
+  //         <p className="text-gray-400 mb-6">You're successfully logged in.</p>
+  //         <button
+  //           onClick={() => supabase.auth.signOut()}
+  //           className="px-6 py-3 bg-zinc-800 text-gray-300 rounded-xl hover:bg-zinc-700 transition-colors duration-200"
+  //         >
+  //           Sign Out
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center p-4">
@@ -73,7 +75,11 @@ const LoginPage = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/20">
-              <MessageCircle className="text-white" size={32} />
+              <img
+                src="./zappy-dup.png"
+                className="rounded-xl"
+                alt="zappy-logo"
+              />
             </div>
             <h1 className="text-3xl font-bold text-gray-100 mb-2">
               Welcome To Zappy
