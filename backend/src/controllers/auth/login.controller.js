@@ -3,22 +3,17 @@ import User from "../../models/user.model.js";
 export const login = async (req, res) => {
   const { email, user_metadata } = req.user;
   const { full_name: fullName, picture: profilePic } = user_metadata;
-  const { username } = req.body;
+  console.log("login in backend");
 
-  if (!email || !username || !fullName) {
+  if (!email || !fullName) {
     return res.status(400).json({ message: "missing required credentials" });
   }
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      const existingUsername = await User.findOne({ username });
-      if (existingUsername) {
-        return res.status(409).json({ message: "Username is already taken" });
-      }
       const newUser = new User({
         email,
         fullName,
-        username,
         profilePic,
       });
       await newUser.save();

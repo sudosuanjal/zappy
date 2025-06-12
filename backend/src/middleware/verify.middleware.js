@@ -11,6 +11,9 @@ export const verifyAuth = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.SUPABASE_JWT_SECRET);
     req.user = decoded;
+    console.log("in the middleware verifyAuth");
+    console.log("ProtectRoute middleware triggered", decoded.email);
+
     next();
   } catch (error) {
     console.log("jwt verification failed: " + error.message);

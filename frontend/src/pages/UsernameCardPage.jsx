@@ -2,10 +2,15 @@ import { useState } from "react";
 import { useAuth } from "../store/auth.store";
 import { supabase } from "../lib/supabaseClient";
 
-const UsernameCard = () => {
+const UsernameCardPage = () => {
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
 
-  const { login, error, isAuthLoading: usernameLoading } = useAuth();
+  const { usernameFn, isUsernameLoading: usernameLoading, user } = useAuth();
+
+  console.log("user from username card");
+
+  console.log(user);
 
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
@@ -13,11 +18,14 @@ const UsernameCard = () => {
       setError("Please enter a username");
       return;
     }
+    console.log(user);
 
     try {
-      const response = await login(username);
+      const response = await usernameFn(username);
       console.log("Username submitted:", username);
+      setError("");
     } catch (error) {
+      setError(error.message);
       console.error(error);
     }
   };
@@ -102,4 +110,4 @@ const UsernameCard = () => {
   );
 };
 
-export default UsernameCard;
+export default UsernameCardPage;

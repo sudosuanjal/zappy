@@ -3,15 +3,57 @@ import api from "../config/apiConfig";
 
 export const useAuth = create((set) => ({
   user: null,
+  isAuthenticated: false,
   isAuthLoading: false,
+  isUsernameLoading: false,
   error: null,
-  login: async (username) => {
+  isLoading: false,
+  loginFn: async () => {
+    console.log("loginFn called");
     set({ isAuthLoading: true });
     try {
-      const response = await api.post("/api/auth/login", { username });
-      set({ isAuthLoading: false, error: null });
+      const response = await api.post("/api/auth/login");
+      set({
+        isAuthLoading: false,
+        error: null,
+        user: response.data.user,
+        isAuthenticated: true,
+      });
     } catch (error) {
-      set({ isAuthLoading: false, user: null, error: error });
+      set({
+        isAuthLoading: false,
+        user: null,
+        error: error,
+        isAuthenticated: false,
+      });
+      throw error;
+    }
+  },
+  usernameFn: async (username) => {
+    console.log("usernameFn called");
+    set({ isUsernameLoading: true });
+    try {
+      const response = await api.put("/api/auth/username", { username });
+      set({ isUsernameLoading: false });
+    } catch (error) {
+      set({ isUsernameLoading: false, user: null });
+      throw error;
+    }
+  },
+  checkAuthFn: async () => {
+    console.log("checkAuthFn called");
+    set({ isLoading: true });
+    try {
+      const response = await api.get("/api/auth/check-auth");
+      set({
+        user: response.data.user,
+        isLoading: false,
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      set({ isLoading: false, user: null, isAuthenticated: false });
+      console.log(error);
+
       throw error;
     }
   },

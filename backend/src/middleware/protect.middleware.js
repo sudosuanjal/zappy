@@ -14,11 +14,12 @@ export const ProtectRoute = async (req, res, next) => {
     const email = decoded.email;
 
     const user = await User.findOne({ email });
-    req.user = user;
-    next();
     if (!user) {
       return res.status(404).json({ message: "user not found" });
     }
+
+    req.user = user;
+    next();
   } catch (error) {
     console.error("JWT verification failed:", error.message);
     return res.status(401).json({ message: "Invalid or expired token" });
