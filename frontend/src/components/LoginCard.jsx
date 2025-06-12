@@ -1,10 +1,12 @@
 import { Chrome, MessageCircle, Zap } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { useAuth } from "../store/auth.store";
 
 const LoginCard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const {} = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
@@ -13,9 +15,9 @@ const LoginCard = () => {
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/login`,
-        },
+        // options: {
+        //   redirectTo: `${window.location.origin}/login`,
+        // },
       });
 
       if (error) throw error;
