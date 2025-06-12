@@ -1,5 +1,4 @@
 import { User } from "lucide-react";
-import React from "react";
 import { useState } from "react";
 
 const UsernameCard = () => {
@@ -35,7 +34,12 @@ const UsernameCard = () => {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/20">
-                <User className="text-white" size={32} />
+                {/* <User className="text-white" size={32} /> */}
+                <img
+                  src="./zappy-dup.png"
+                  className="rounded-xl"
+                  alt="zappy-logo"
+                />
               </div>
               <h1 className="text-3xl font-bold text-gray-100 mb-2">
                 Choose Your Username

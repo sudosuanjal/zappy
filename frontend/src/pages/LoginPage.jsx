@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { Chrome, MessageCircle, Zap, User } from "lucide-react";
+import { Chrome, MessageCircle } from "lucide-react";
 import LoginCard from "../components/LoginCard";
 import UsernameCard from "../components/UsernameCard";
 
