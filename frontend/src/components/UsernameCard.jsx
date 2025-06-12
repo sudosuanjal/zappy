@@ -1,10 +1,11 @@
-import { User } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../store/auth.store";
+import { supabase } from "../lib/supabaseClient";
 
 const UsernameCard = () => {
-  const [error, setError] = useState("");
-  const [usernameLoading, setUsernameLoading] = useState(false);
   const [username, setUsername] = useState("");
+
+  const { login, error, isAuthLoading: usernameLoading } = useAuth();
 
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
@@ -14,14 +15,10 @@ const UsernameCard = () => {
     }
 
     try {
-      setUsernameLoading(true);
-      setError("");
-
+      const response = await login(username);
       console.log("Username submitted:", username);
     } catch (error) {
-      setError(error.message);
-    } finally {
-      setUsernameLoading(false);
+      console.error(error);
     }
   };
 
