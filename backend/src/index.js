@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { configDotenv } from "dotenv";
 import { connect } from "./database/connectDB.js";
 import authRoutes from "./routes/auth.rotue.js";
+import messageRoutes from "./routes/message.route.js";
 
 configDotenv();
 const PORT = process.env.PORT;
@@ -20,7 +21,9 @@ app.use(
 app.get("/", (req, res) => {
   res.status(200).json({ message: "hello anjal" });
 });
+
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 app.listen(PORT, () => {
   connect();
