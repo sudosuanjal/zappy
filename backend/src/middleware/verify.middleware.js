@@ -13,6 +13,7 @@ export const verifyAuth = async (req, res, next) => {
     req.user = decoded;
     console.log("in the middleware verifyAuth");
     console.log("ProtectRoute middleware triggered", decoded.email);
+    console.log("in this verify auth");
 
     next();
   } catch (error) {

@@ -9,6 +9,8 @@ export const login = async (req, res) => {
     return res.status(400).json({ message: "missing required credentials" });
   }
   try {
+    console.log("in the login");
+
     const user = await User.findOne({ email });
     if (!user) {
       const newUser = new User({

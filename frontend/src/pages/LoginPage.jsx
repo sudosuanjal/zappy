@@ -8,6 +8,7 @@ import { useAuth } from "../store/auth.store";
 const LoginPage = () => {
   const [session, setSession] = useState(null);
   const { user, loginFn } = useAuth();
+  console.log("here at login");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -25,7 +26,7 @@ const LoginPage = () => {
   }, []);
 
   console.log("from login card");
-  console.log(user?.username);
+  console.log(user);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center p-4">

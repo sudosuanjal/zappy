@@ -42,7 +42,7 @@ export const useAuth = create((set) => ({
   },
   checkAuthFn: async () => {
     console.log("checkAuthFn called");
-    set({ isLoading: true });
+    set({ isLoading: true, isAuthenticated: false });
     try {
       const response = await api.get("/api/auth/check-auth");
       set({
