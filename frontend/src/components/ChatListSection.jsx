@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatHeader from "./chat/ChatHeader";
 import ChatItem from "./chat/ChatItem";
 import ChatFooter from "./chat/ChatFooter";
+import { useChat } from "../store/chat.store";
 
 const chatData = [
   {
@@ -108,9 +109,14 @@ const chatData = [
 const ChatListSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeChat, setActiveChat] = useState(1);
+  const { allUsers, getUsersFn } = useChat();
 
-  const filteredChats = chatData.filter((chat) =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    getUsersFn();
+  }, [getUsersFn]);
+
+  const filteredChats = (allUsers || []).filter((user) =>
+    user.username?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -118,8 +124,8 @@ const ChatListSection = () => {
       <ChatHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
-        {filteredChats.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} setActiveChat={setActiveChat} />
+        {(allUsers || []).map((user) => (
+          <ChatItem key={user.id} user={user} setActiveChat={setActiveChat} />
         ))}
       </div>
 
