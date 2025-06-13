@@ -115,10 +115,6 @@ const ChatListSection = () => {
     getUsersFn();
   }, [getUsersFn]);
 
-  const filteredChats = (allUsers || []).filter((user) =>
-    user.username?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="w-80 bg-zinc-900/90 border-r border-zinc-800 flex flex-col h-full rounded-xl">
       <ChatHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
