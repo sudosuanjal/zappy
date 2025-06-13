@@ -10,7 +10,7 @@ const ChatItem = ({ user, setActiveChat }) => {
     >
       <div className="relative">
         <img
-          src={user.profilePic || "/placeholder.svg"}
+          src={user.profilePic || "/placeholder.png"}
           alt={user.fullName}
           className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500/30 shadow-lg"
         />
