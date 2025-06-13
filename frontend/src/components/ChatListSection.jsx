@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "../store/auth.store";
 import ChatHeader from "./chat/ChatHeader";
 import ChatItem from "./chat/ChatItem";
 import ChatFooter from "./chat/ChatFooter";
