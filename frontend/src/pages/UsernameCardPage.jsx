@@ -25,7 +25,7 @@ const UsernameCardPage = () => {
       console.log("Username submitted:", username);
       setError("");
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message);
       console.error(error);
     }
   };

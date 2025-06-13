@@ -19,7 +19,7 @@ const LoginCard = () => {
       });
       if (error) throw error;
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message);
     } finally {
       setLoading(false);
     }

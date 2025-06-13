@@ -34,9 +34,9 @@ export const useAuth = create((set) => ({
     set({ isUsernameLoading: true });
     try {
       const response = await api.put("/api/auth/username", { username });
-      set({ isUsernameLoading: false });
+      set({ isUsernameLoading: false, user: response.data.user });
     } catch (error) {
-      set({ isUsernameLoading: false, user: null });
+      set({ isUsernameLoading: false });
       throw error;
     }
   },
