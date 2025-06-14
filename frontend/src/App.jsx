@@ -30,7 +30,7 @@ const App = () => {
       {/* Redirect logged-in users away from login page */}
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />}
+        element={isAuthenticated ? <Navigate to="/chat" /> : <LoginPage />}
       />
 
       {/* Username setup: only if logged in and no username */}
@@ -39,7 +39,7 @@ const App = () => {
         element={
           isAuthenticated ? (
             user?.username ? (
-              <Navigate to="/" />
+              <Navigate to="/chat" />
             ) : (
               <UsernameCardPage />
             )
@@ -51,7 +51,7 @@ const App = () => {
 
       {/* Main chat page: requires full login + username */}
       <Route
-        path="/"
+        path="/chat/:id?"
         element={
           isAuthenticated ? (
             user?.username ? (
@@ -64,6 +64,7 @@ const App = () => {
           )
         }
       />
+      <Route path="*" element={<Navigate to="/chat" />} />
     </Routes>
   );
 };

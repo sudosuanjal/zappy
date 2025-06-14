@@ -1,10 +1,16 @@
+import { useNavigate } from "react-router";
 import { useChat } from "../../store/chat.store";
 
 const ChatItem = ({ user }) => {
   const { activeUser, setActiveUser } = useChat();
+  const navigate = useNavigate();
+  const handleUserClick = (user) => {
+    setActiveUser(user);
+    navigate(`/chat/${user._id}`);
+  };
   return (
     <div
-      onClick={() => setActiveUser(user)}
+      onClick={() => handleUserClick(user)}
       className={`flex items-center p-4 cursor-pointer transition-all duration-200 rounded-xl mx-2 mb-2  border border-purple-500/30 ${
         activeUser?._id === user._id
           ? "bg-gradient-to-r from-purple-600/20 to-blue-600/20 "
