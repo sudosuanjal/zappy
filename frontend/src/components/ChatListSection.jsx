@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import ChatHeader from "./chat/ChatHeader";
-import ChatItem from "./chat/ChatItem";
-import ChatFooter from "./chat/ChatFooter";
+import ChatHeader from "./sideBar/ChatHeader";
+import ChatItem from "./sideBar/ChatItem";
+import ChatFooter from "./sideBar/ChatFooter";
 import { useChat } from "../store/chat.store";
+import ChatItemSkeleton from "./skeleton/ChatItemSkeleton";
 
 const chatData = [
   {
@@ -108,8 +109,7 @@ const chatData = [
 
 const ChatListSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeChat, setActiveChat] = useState(1);
-  const { allUsers, getUsersFn } = useChat();
+  const { allUsers, getUsersFn, isUsersLoading } = useChat();
 
   useEffect(() => {
     getUsersFn();
@@ -120,9 +120,20 @@ const ChatListSection = () => {
       <ChatHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
-        {(allUsers || []).map((user) => (
-          <ChatItem key={user.id} user={user} setActiveChat={setActiveChat} />
-        ))}
+        {isUsersLoading ? (
+          Array.from({ length: 6 }).map((_, index) => (
+            <ChatItemSkeleton key={`skeleton-${index}`} />
+          ))
+        ) : allUsers.length > 0 ? (
+          allUsers.map((user) => <ChatItem key={user._id} user={user} />)
+        ) : (
+          <div className="flex flex-col items-center justify-center py-8 text-gray-400">
+            <div className="text-4xl mb-2">👥</div>
+            <p className="text-sm">
+              {searchQuery ? "No users found" : "No conversations yet"}
+            </p>
+          </div>
+        )}
       </div>
 
       <ChatFooter />

@@ -2,9 +2,10 @@ import { create } from "zustand";
 import api from "../config/apiConfig";
 
 export const useChat = create((set) => ({
-  allUsers: null,
+  allUsers: [],
   isUsersLoading: false,
-  getUsersFn: async (req, res) => {
+  activeUser: null,
+  getUsersFn: async () => {
     set({ isUsersLoading: true });
     try {
       const response = await api.get("/api/message/users");
@@ -19,4 +20,6 @@ export const useChat = create((set) => ({
       throw error;
     }
   },
+  setActiveUser: (activeUser) => set({ activeUser }),
+  sendMessageFn: async (message) => {},
 }));

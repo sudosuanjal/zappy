@@ -1,10 +1,13 @@
-const ChatItem = ({ user, setActiveChat }) => {
+import { useChat } from "../../store/chat.store";
+
+const ChatItem = ({ user }) => {
+  const { activeUser, setActiveUser } = useChat();
   return (
     <div
-      onClick={() => setActiveChat(user._id)}
-      className={`flex items-center p-4 cursor-pointer transition-all duration-200 rounded-xl mx-2 mb-2 ${
-        user.active
-          ? "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30"
+      onClick={() => setActiveUser(user)}
+      className={`flex items-center p-4 cursor-pointer transition-all duration-200 rounded-xl mx-2 mb-2  border border-purple-500/30 ${
+        activeUser?._id === user._id
+          ? "bg-gradient-to-r from-purple-600/20 to-blue-600/20 "
           : "hover:bg-zinc-800/50"
       }`}
     >
