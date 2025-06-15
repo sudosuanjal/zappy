@@ -7,6 +7,7 @@ export const useChat = create((set) => ({
   activeUser: null,
   messages: [],
   isMessageLoading: false,
+  isMessageSending: false,
   getUsersFn: async () => {
     set({ isUsersLoading: true });
     try {
@@ -32,6 +33,18 @@ export const useChat = create((set) => ({
       throw error;
     }
   },
+  sendMessageFn: async (message) => {
+    set({ isMessageSending: true });
+    const { activeUser, messages } = get();
+    try {
+      const response = api.post(`/api/message/send/${activeUser._id}`, {
+        message,
+      });
+      set({ isMessageSending: false, messages: [...messages, response.data] });
+    } catch (error) {
+      set({ isMessageSending: false });
+      throw error;
+    }
+  },
   setActiveUser: (activeUser) => set({ activeUser }),
-  sendMessageFn: async (message) => {},
 }));

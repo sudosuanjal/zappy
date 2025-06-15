@@ -2,14 +2,14 @@ import Message from "../../models/message.model.js";
 
 export const sendMessage = async (req, res) => {
   try {
-    const { text } = req.body;
+    const { message } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
     const newMessage = new Message({
       senderId,
       receiverId,
-      text,
+      text: message,
     });
 
     await newMessage.save();
