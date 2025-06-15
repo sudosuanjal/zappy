@@ -5,6 +5,8 @@ export const useChat = create((set) => ({
   allUsers: [],
   isUsersLoading: false,
   activeUser: null,
+  messages: [],
+  isMessageLoading: false,
   getUsersFn: async () => {
     set({ isUsersLoading: true });
     try {
@@ -17,6 +19,16 @@ export const useChat = create((set) => ({
       });
     } catch (error) {
       set({ isUsersLoading: false });
+      throw error;
+    }
+  },
+  getMessagesFn: async (userId) => {
+    set({ isMessageLoading: true });
+    try {
+      const response = api.get(`/api/message/${userId}`);
+      set({ isMessageLoading: false, messages: response.data });
+    } catch (error) {
+      set({ isMessageLoading: false });
       throw error;
     }
   },
