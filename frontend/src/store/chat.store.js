@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import api from "../config/apiConfig";
 
-export const useChat = create((set) => ({
+export const useChat = create((set, get) => ({
   allUsers: [],
   isUsersLoading: false,
   activeUser: null,
@@ -26,7 +26,7 @@ export const useChat = create((set) => ({
   getMessagesFn: async (userId) => {
     set({ isMessageLoading: true });
     try {
-      const response = api.get(`/api/message/${userId}`);
+      const response = await api.get(`/api/message/${userId}`);
       set({ isMessageLoading: false, messages: response.data });
     } catch (error) {
       set({ isMessageLoading: false });
@@ -37,12 +37,18 @@ export const useChat = create((set) => ({
     set({ isMessageSending: true });
     const { activeUser, messages } = get();
     try {
-      const response = api.post(`/api/message/send/${activeUser._id}`, {
+      console.log("sendMessageFn called");
+      console.log("activUser: " + activeUser._id);
+      console.log("message: " + message);
+
+      const response = await api.post(`/api/message/send/${activeUser._id}`, {
         message,
       });
       set({ isMessageSending: false, messages: [...messages, response.data] });
     } catch (error) {
       set({ isMessageSending: false });
+      console.log(error);
+
       throw error;
     }
   },
