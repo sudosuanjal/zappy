@@ -1,13 +1,18 @@
 import { create } from "zustand";
 import api from "../config/apiConfig";
+import { io } from "socket.io-client";
+import { disconnect } from "mongoose";
 
-export const useAuth = create((set) => ({
+const BACKEND_URL = "http://localhost:5173";
+
+export const useAuth = create((set, get) => ({
   user: null,
   isAuthenticated: false,
   isAuthLoading: false,
   isUsernameLoading: false,
   error: null,
   isLoading: false,
+  socket: null,
   loginFn: async () => {
     console.log("loginFn called");
     set({ isAuthLoading: true });
@@ -56,5 +61,15 @@ export const useAuth = create((set) => ({
 
       throw error;
     }
+  },
+  connectToSocket: () => {
+    const { user } = get();
+    if (!user || get().socket?.connected) return;
+    const socket = io(BACKEND_URL, {});
+    socket.connect();
+    set({ socket: socket });
+  },
+  disconnectSocket: () => {
+    if (get().socket?.connected) get().socket.disconnect();
   },
 }));

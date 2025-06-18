@@ -10,13 +10,7 @@ const ActiveChatArea = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  const {
-    messages,
-    sendMessageFn,
-    activeUser,
-    getMessagesFn,
-    isMessageLoading,
-  } = useChat();
+  const { messages, sendMessageFn, activeUser, getMessagesFn } = useChat();
 
   useEffect(() => {
     if (activeUser) {
