@@ -14,9 +14,12 @@ const connectedUsers = {};
 
 io.on("connection", (socket) => {
   console.log("a user connected: " + socket.id);
+  console.log("socket connection");
 
   const userId = socket.handshake.query.userId;
   if (userId) connectedUsers[userId] = socket.id;
+
+  console.log(socket.id);
 
   io.emit("getOnlineUsers", Object.keys(connectedUsers));
 

@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router";
 import { useChat } from "../../store/chat.store";
+import { useAuth } from "../../store/auth.store";
 
 const ChatItem = ({ user }) => {
   const { activeUser, setActiveUser } = useChat();
+
+  const { onlineUsers } = useAuth();
   const navigate = useNavigate();
   const handleUserClick = (user) => {
     setActiveUser(user);
     navigate(`/chat/${user._id}`);
   };
+
+  console.log(onlineUsers);
+  console.log("userid: " + user._id);
+
   return (
     <div
       onClick={() => handleUserClick(user)}
@@ -23,7 +30,7 @@ const ChatItem = ({ user }) => {
           alt={user.fullName}
           className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500/30 shadow-lg"
         />
-        {user.online && (
+        {onlineUsers.includes(user._id) && (
           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-zinc-900 animate-pulse"></div>
         )}
       </div>

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import api from "../config/apiConfig";
 import { io } from "socket.io-client";
 
-const BACKEND_URL = "http://localhost:5173";
+const BACKEND_URL = "http://localhost:5000";
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -24,6 +24,7 @@ export const useAuth = create((set, get) => ({
         user: response.data.user,
         isAuthenticated: true,
       });
+      get().connectToSocket();
     } catch (error) {
       set({
         isAuthLoading: false,
@@ -55,6 +56,7 @@ export const useAuth = create((set, get) => ({
         isLoading: false,
         isAuthenticated: true,
       });
+      get().connectToSocket();
     } catch (error) {
       set({ isLoading: false, user: null, isAuthenticated: false });
       console.log(error);
@@ -72,6 +74,7 @@ export const useAuth = create((set, get) => ({
     });
     socket.connect();
     set({ socket: socket });
+    console.log("user id from auth store: " + user._id);
 
     socket.on("getOnlineUsers", (userIds) => {
       set({ onlineUsers: userIds });

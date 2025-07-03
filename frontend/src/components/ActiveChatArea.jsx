@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useChat } from "../store/chat.store";
 import MessageBubble from "./chat/MessageBubble";
+import { useAuth } from "../store/auth.store";
 
 const ActiveChatArea = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
   const { messages, sendMessageFn, activeUser, getMessagesFn } = useChat();
+  const { onlineUsers } = useAuth();
 
   useEffect(() => {
     if (activeUser) {
@@ -42,13 +44,19 @@ const ActiveChatArea = () => {
                 alt={activeUser?.fullName}
                 className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500/50 shadow-lg shadow-purple-500/20 transition-all duration-200"
               />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-zinc-900 animate-pulse"></div>
+              {onlineUsers.includes(activeUser?._id) && (
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-zinc-900 animate-pulse"></div>
+              )}
             </div>
             <div>
               <h3 className="font-medium text-gray-100">
                 {activeUser?.fullName}
               </h3>
-              <p className="text-sm text-purple-400 font-medium">Online</p>
+              {onlineUsers.includes(activeUser?._id) ? (
+                <p className="text-sm text-purple-400 font-medium">Online</p>
+              ) : (
+                <p className="text-sm text-purple-400 font-medium">Offline</p>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-3">
