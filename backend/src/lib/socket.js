@@ -10,11 +10,20 @@ const io = new Server(httpServer, {
   },
 });
 
+const connectedUsers = {};
+
 io.on("connection", (socket) => {
   console.log("a user connected: " + socket.id);
 
+  const userId = socket.handshake.query.userId;
+  if (userId) connectedUsers[userId] = socket.id;
+
+  io.emit("getOnlineUsers", Object.keys(connectedUsers));
+
   socket.on("disconnect", () => {
     console.log("a user disconnected: " + socket.id);
+    delete connectedUsers[userId];
+    io.emit("getOnlineUsers", Object.keys(connectedUsers));
   });
 });
 
