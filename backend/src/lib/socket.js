@@ -10,6 +10,10 @@ const io = new Server(httpServer, {
   },
 });
 
+export function getSocketId(userId) {
+  return connectedUsers[userId];
+}
+
 const connectedUsers = {};
 
 io.on("connection", (socket) => {

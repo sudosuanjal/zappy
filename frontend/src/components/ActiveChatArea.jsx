@@ -11,14 +11,25 @@ const ActiveChatArea = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  const { messages, sendMessageFn, activeUser, getMessagesFn } = useChat();
+  const {
+    messages,
+    sendMessageFn,
+    activeUser,
+    getMessagesFn,
+    listenToMessage,
+    unListenToMessage,
+  } = useChat();
   const { onlineUsers } = useAuth();
 
   useEffect(() => {
     if (activeUser) {
       getMessagesFn(activeUser._id);
+
+      listenToMessage();
+
+      return () => unListenToMessage();
     }
-  }, [activeUser, getMessagesFn]);
+  }, [activeUser, getMessagesFn, listenToMessage, unListenToMessage]);
 
   useEffect(() => {
     if (messagesEndRef.current) {

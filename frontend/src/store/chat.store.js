@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../config/apiConfig";
+import { useAuth } from "./auth.store";
 
 export const useChat = create((set, get) => ({
   allUsers: [],
@@ -51,6 +52,19 @@ export const useChat = create((set, get) => ({
 
       throw error;
     }
+  },
+  listenToMessage: () => {
+    const { activeUser } = get();
+    if (!activeUser) return;
+
+    const socket = useAuth.getState().socket;
+    socket.on("newMessage", (newMessage) => {
+      set({ messages: [...get().messages, newMessage] });
+    });
+  },
+  unListenToMessage: () => {
+    const socket = useAuth.getState().socket;
+    socket.off("newMessage");
   },
   setActiveUser: (activeUser) => set({ activeUser }),
 }));
