@@ -73,7 +73,12 @@ export const useChat = create((set, get) => ({
 
     const socket = useAuth.getState().socket;
     socket.on("newMessage", (newMessage) => {
-      set({ messages: [...get().messages, newMessage] });
+      if (
+        newMessage.senderId === activeUser._id ||
+        newMessage.receiverId === activeUser._id
+      ) {
+        set({ messages: [...get().messages, newMessage] });
+      }
     });
   },
   unListenToMessage: () => {
