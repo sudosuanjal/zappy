@@ -19,11 +19,25 @@ export const useChat = create((set, get) => ({
         isUsersLoading: false,
         allUsers: response.data,
       });
+
+      get().checkAndSetLastActiveUser();
     } catch (error) {
       set({ isUsersLoading: false });
       throw error;
     }
   },
+  checkAndSetLastActiveUser: () => {
+    const { allUsers, setActiveUser } = get();
+    const lastUserId = localStorage.getItem("lastActiveUserId");
+
+    if (lastUserId) {
+      const lastUser = allUsers.find((user) => user._id === lastUserId);
+      if (lastUser) {
+        setActiveUser(lastUser);
+      }
+    }
+  },
+
   getMessagesFn: async (userId) => {
     set({ isMessageLoading: true });
     try {
@@ -66,5 +80,8 @@ export const useChat = create((set, get) => ({
     const socket = useAuth.getState().socket;
     socket.off("newMessage");
   },
-  setActiveUser: (activeUser) => set({ activeUser }),
+  setActiveUser: (activeUser) => {
+    localStorage.setItem("lastActiveUserId", activeUser._id);
+    set({ activeUser });
+  },
 }));
