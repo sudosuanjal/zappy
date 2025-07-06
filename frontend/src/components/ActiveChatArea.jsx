@@ -66,7 +66,9 @@ const ActiveChatArea = () => {
               {onlineUsers.includes(activeUser?._id) ? (
                 <p className="text-sm text-purple-400 font-medium">Online</p>
               ) : (
-                <p className="text-sm text-purple-400 font-medium">Offline</p>
+                activeUser && (
+                  <p className="text-sm text-purple-400 font-medium">Offline</p>
+                )
               )}
             </div>
           </div>

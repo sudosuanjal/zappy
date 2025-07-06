@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router";
+import { Route, Routes, Navigate, useLocation } from "react-router";
 import { useEffect } from "react";
 import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
@@ -7,6 +7,7 @@ import { useAuth } from "./store/auth.store";
 
 const App = () => {
   const { checkAuthFn, isAuthenticated, user, isLoading } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     checkAuthFn();
@@ -30,7 +31,13 @@ const App = () => {
       {/* Redirect logged-in users away from login page */}
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/chat" /> : <LoginPage />}
+        element={
+          isAuthenticated ? (
+            <Navigate to={location.state?.from || "/chat"} />
+          ) : (
+            <LoginPage />
+          )
+        }
       />
 
       {/* Username setup: only if logged in and no username */}
@@ -39,12 +46,12 @@ const App = () => {
         element={
           isAuthenticated ? (
             user?.username ? (
-              <Navigate to="/chat" />
+              <Navigate to={location.state?.from || "/chat"} />
             ) : (
               <UsernameCardPage />
             )
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" state={{ from: location.pathname }} />
           )
         }
       />
@@ -57,10 +64,13 @@ const App = () => {
             user?.username ? (
               <ChatPage />
             ) : (
-              <Navigate to="/login/username" />
+              <Navigate
+                to="/login/username"
+                state={{ from: location.pathname }}
+              />
             )
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" state={{ from: location.pathname }} />
           )
         }
       />

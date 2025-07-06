@@ -10,7 +10,7 @@ export const useChat = create((set, get) => ({
   messages: [],
   isMessageLoading: false,
   isMessageSending: false,
-  getUsersFn: async (navigate) => {
+  getUsersFn: async (navigate, currentUsername) => {
     set({ isUsersLoading: true });
     try {
       const response = await api.get("/api/message/users");
@@ -21,15 +21,16 @@ export const useChat = create((set, get) => ({
         allUsers: response.data,
       });
 
-      get().checkAndSetLastActiveUser(navigate);
+      get().checkAndSetLastActiveUser(navigate, currentUsername);
     } catch (error) {
       set({ isUsersLoading: false });
       throw error;
     }
   },
-  checkAndSetLastActiveUser: (navigate) => {
+  checkAndSetLastActiveUser: (navigate, currentUsername) => {
     const { allUsers, setActiveUser } = get();
     const lastUserId = localStorage.getItem("lastActiveUserId");
+    if (currentUsername) return;
 
     if (lastUserId) {
       const lastUser = allUsers.find((user) => user._id === lastUserId);
