@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import api from "../config/apiConfig";
 import { useAuth } from "./auth.store";
+import { useNavigate } from "react-router";
 
 export const useChat = create((set, get) => ({
   allUsers: [],
@@ -9,7 +10,7 @@ export const useChat = create((set, get) => ({
   messages: [],
   isMessageLoading: false,
   isMessageSending: false,
-  getUsersFn: async () => {
+  getUsersFn: async (navigate) => {
     set({ isUsersLoading: true });
     try {
       const response = await api.get("/api/message/users");
@@ -20,13 +21,13 @@ export const useChat = create((set, get) => ({
         allUsers: response.data,
       });
 
-      get().checkAndSetLastActiveUser();
+      get().checkAndSetLastActiveUser(navigate);
     } catch (error) {
       set({ isUsersLoading: false });
       throw error;
     }
   },
-  checkAndSetLastActiveUser: () => {
+  checkAndSetLastActiveUser: (navigate) => {
     const { allUsers, setActiveUser } = get();
     const lastUserId = localStorage.getItem("lastActiveUserId");
 
@@ -34,6 +35,7 @@ export const useChat = create((set, get) => ({
       const lastUser = allUsers.find((user) => user._id === lastUserId);
       if (lastUser) {
         setActiveUser(lastUser);
+        navigate(`/chat/${lastUser.username}`);
       }
     }
   },

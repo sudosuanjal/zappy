@@ -9,11 +9,8 @@ const ChatItem = ({ user }) => {
   const navigate = useNavigate();
   const handleUserClick = (user) => {
     setActiveUser(user);
-    navigate(`/chat/${user._id}`);
+    navigate(`/chat/${user.username}`);
   };
-
-  console.log(onlineUsers);
-  console.log("userid: " + user._id);
 
   return (
     <div
