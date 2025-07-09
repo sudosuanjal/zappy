@@ -1,9 +1,11 @@
 import { Route, Routes, Navigate, useLocation } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 import UsernameCardPage from "./pages/UsernameCardPage";
 import { useAuth } from "./store/auth.store";
+
+const INTENDED_DESTINATION_KEY = "zappy_intended_destination";
 
 const App = () => {
   const { checkAuthFn, isAuthenticated, user, isLoading } = useAuth();
@@ -12,6 +14,33 @@ const App = () => {
   useEffect(() => {
     checkAuthFn();
   }, [checkAuthFn]);
+
+  // Store intended destination when user is not authenticated
+  useEffect(() => {
+    if (
+      !isAuthenticated &&
+      !isLoading &&
+      location.pathname !== "/login" &&
+      location.pathname !== "/login/username"
+    ) {
+      console.log("Setting intended destination:", location.pathname);
+      sessionStorage.setItem(INTENDED_DESTINATION_KEY, location.pathname);
+    }
+  }, [isAuthenticated, isLoading, location.pathname]);
+
+  // Clear intended destination when user reaches their destination
+  useEffect(() => {
+    if (isAuthenticated && user?.username) {
+      const intended = sessionStorage.getItem(INTENDED_DESTINATION_KEY);
+      if (intended && location.pathname === intended) {
+        console.log(
+          "Clearing intended destination - user reached:",
+          location.pathname
+        );
+        sessionStorage.removeItem(INTENDED_DESTINATION_KEY);
+      }
+    }
+  }, [isAuthenticated, user?.username, location.pathname]);
 
   if (isLoading)
     return (
@@ -26,6 +55,33 @@ const App = () => {
       </div>
     );
 
+  const getRedirectPath = () => {
+    const intendedDestination = sessionStorage.getItem(
+      INTENDED_DESTINATION_KEY
+    );
+    const path = intendedDestination || location.state?.from || "/chat";
+    console.log(
+      "getRedirectPath called from:",
+      location.pathname,
+      "intendedDestination:",
+      intendedDestination,
+      "location.state?.from:",
+      location.state?.from,
+      "returning:",
+      path
+    );
+    return path;
+  };
+
+  console.log(
+    "App render - location:",
+    location.pathname,
+    "isAuthenticated:",
+    isAuthenticated,
+    "user?.username:",
+    user?.username
+  );
+
   return (
     <Routes>
       {/* Redirect logged-in users away from login page */}
@@ -33,7 +89,15 @@ const App = () => {
         path="/login"
         element={
           isAuthenticated ? (
-            <Navigate to={location.state?.from || "/chat"} />
+            user?.username ? (
+              <Navigate to={getRedirectPath()} replace />
+            ) : (
+              <Navigate
+                to="/login/username"
+                state={{ from: getRedirectPath() }}
+                replace
+              />
+            )
           ) : (
             <LoginPage />
           )
@@ -46,12 +110,12 @@ const App = () => {
         element={
           isAuthenticated ? (
             user?.username ? (
-              <Navigate to={location.state?.from || "/chat"} />
+              <Navigate to={getRedirectPath()} replace />
             ) : (
               <UsernameCardPage />
             )
           ) : (
-            <Navigate to="/login" state={{ from: location.pathname }} />
+            <Navigate to="/login" state={{ from: getRedirectPath() }} replace />
           )
         }
       />
@@ -67,14 +131,15 @@ const App = () => {
               <Navigate
                 to="/login/username"
                 state={{ from: location.pathname }}
+                replace
               />
             )
           ) : (
-            <Navigate to="/login" state={{ from: location.pathname }} />
+            <Navigate to="/login" state={{ from: location.pathname }} replace />
           )
         }
       />
-      <Route path="*" element={<Navigate to="/chat" />} />
+      <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>
   );
 };

@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import LoginCard from "../components/LoginCard";
 import { useAuth } from "../store/auth.store";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 
 const LoginPage = () => {
   const [session, setSession] = useState(null);
   const { user, loginFn } = useAuth();
-  const location = useLocation(); // ✅ Use this
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  const from = location.state?.from || "/chat"; // ✅ Access state from location
+  // Get the original destination from the location state
+  const from = location.state?.from || "/chat";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,9 +24,7 @@ const LoginPage = () => {
       if (session?.user) {
         try {
           await loginFn();
-          console.log("after loginFN: " + from);
-
-          navigate(from, { replace: true }); // ✅ Navigates to the original path
+          console.log("Login successful, original destination:", from);
         } catch (err) {
           console.error("Login failed:", err);
         }
@@ -34,7 +32,7 @@ const LoginPage = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [loginFn, from]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center p-4">
