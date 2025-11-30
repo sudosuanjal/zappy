@@ -1,12 +1,28 @@
+// lib/socket.js
 import { createServer } from "http";
 import { Server } from "socket.io";
 import express from "express";
 
 const app = express();
 const httpServer = createServer(app);
+
+const allowedOrigins = [
+  "http://localhost:5173", // dev
+  "https://zappy-opal.vercel.app", // production
+];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.log("Blocked by Socket.IO CORS:", origin);
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   },
 });
 
@@ -18,12 +34,9 @@ const connectedUsers = {};
 
 io.on("connection", (socket) => {
   console.log("a user connected: " + socket.id);
-  console.log("socket connection");
 
   const userId = socket.handshake.query.userId;
   if (userId) connectedUsers[userId] = socket.id;
-
-  console.log(socket.id);
 
   io.emit("getOnlineUsers", Object.keys(connectedUsers));
 
