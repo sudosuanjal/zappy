@@ -1,3 +1,4 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -8,13 +9,26 @@ import messageRoutes from "./routes/message.route.js";
 import { app, httpServer } from "./lib/socket.js";
 
 configDotenv();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "https://zappy-opal.vercel.app", // production
+];
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -28,5 +42,5 @@ app.use("/api/message", messageRoutes);
 
 httpServer.listen(PORT, () => {
   connect();
-  console.log("server listening at port:", PORT);
+  console.log("Server listening at port:", PORT);
 });
